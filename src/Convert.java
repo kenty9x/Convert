@@ -9,6 +9,11 @@ import javax.swing.JList;
 import java.awt.List;
 import java.awt.Choice;
 import java.awt.event.ItemListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -16,12 +21,16 @@ import javax.swing.JTextArea;
 import java.awt.Cursor;
 import java.awt.Color;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.JProgressBar;
 
 public class Convert {
+	String path;
+	int row;
+	BufferedReader b;
+	String readLine = "";
 
 	private JFrame frmThong;
-	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -44,6 +53,7 @@ public class Convert {
 	 */
 	public Convert() {
 		initialize();
+		System.out.println(path);
 	}
 
 	/**
@@ -57,24 +67,49 @@ public class Convert {
 		frmThong.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmThong.getContentPane().setLayout(null);
 		
-		
+		//tao TextField cho file
+		JTextField textFieldfile = new JTextField();
+		textFieldfile.setBounds(230, 30, 182, 23);
+		frmThong.getContentPane().add(textFieldfile);
+		textFieldfile.setColumns(10);
 		
 		//Browser button
 		JButton btnNewButton = new JButton("Browser");
-		btnNewButton.setBounds(304, 29, 120, 23);
+		btnNewButton.setBounds(102,29, 120, 23);
 		frmThong.getContentPane().add(btnNewButton);
-		btnNewButton.addActionListener(new docfile());
-		btnNewButton.doClick();
+		btnNewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+				int returnValue = jfc.showOpenDialog(null);
+				// int returnValue = jfc.showSaveDialog(null);
+
+				if (returnValue == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = jfc.getSelectedFile();
+					System.out.println(selectedFile.getAbsolutePath());
+					textFieldfile.setText(selectedFile.getAbsolutePath());
+					path = selectedFile.getAbsolutePath();
+					
+					try {
+						b = new BufferedReader(new FileReader(selectedFile));
+			            System.out.println("Reading file using Buffered Reader");			   
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		
 		
 		//Input file text
 		JLabel lblFile = new JLabel("Input file:");
 		lblFile.setBounds(22, 33, 70, 14);
 		frmThong.getContentPane().add(lblFile);
-		
-		textField = new JTextField();
-		textField.setBounds(102, 30, 182, 20);
-		frmThong.getContentPane().add(textField);
-		textField.setColumns(10);
 		
 		JLabel lblTimeframe = new JLabel("TimeFrame:");
 		lblTimeframe.setBounds(22, 90, 70, 14);
@@ -99,7 +134,6 @@ public class Convert {
 		
 		choice.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				int row;
 				textArea.setText("You selected " + choice.getSelectedItem() + " timeframe. Push convert button to start...");
 				if(choice.getSelectedItem()=="M5") {row=5;}
 				if(choice.getSelectedItem()=="M15") {row=15;}
@@ -113,31 +147,24 @@ public class Convert {
 		JButton btnNewButton_1 = new JButton("Convert");
 		btnNewButton_1.setBounds(179, 203, 89, 23);
 		frmThong.getContentPane().add(btnNewButton_1);
+		btnNewButton_1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					while ((readLine = b.readLine()) != null) {
+					    System.out.println(readLine);
+					}
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setBounds(102, 170, 232, 14);
 		frmThong.getContentPane().add(progressBar);
 	}
+	
 }
 
-class docfile implements ActionListener {
-	//pop-up file path	
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		JFileChooser chooser = new JFileChooser();
-		chooser.setCurrentDirectory(new java.io.File("."));
-		chooser.setDialogTitle("choosertitle");
-		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		chooser.setAcceptAllFileFilterUsed(false);
-
-		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
-			System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
-		} else {
-			System.out.println("No Selection ");
-		}
-
-	}
-}
