@@ -5,8 +5,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.JList;
-import java.awt.List;
 import java.awt.Choice;
 import java.awt.event.ItemListener;
 import java.io.BufferedReader;
@@ -20,14 +18,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import javax.swing.JTextArea;
 import java.awt.Cursor;
-import java.awt.Color;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.JProgressBar;
 
 public class Convert {
 	String path;
-	int row;
+	int row=5;
 	BufferedReader b;
 	String readLine = "";
 
@@ -98,9 +95,6 @@ public class Convert {
 					} catch (FileNotFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
 					}
 				}
 			}
@@ -133,6 +127,12 @@ public class Convert {
 		textArea.setBounds(55, 137, 326, 22);
 		frmThong.getContentPane().add(textArea);
 		
+		//ProgressBar
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setStringPainted(true);
+		progressBar.setBounds(102, 170, 232, 14);
+		frmThong.getContentPane().add(progressBar);
+		
 		choice.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				textArea.setText("You selected " + choice.getSelectedItem() + " timeframe. Push convert button to start...");
@@ -157,6 +157,9 @@ public class Convert {
 					String date_chinh = null, time_chinh = null;
 					PrintWriter writer = new PrintWriter("converted.txt");
 					int count = 0;
+					
+					progressBar.setIndeterminate(true); //set progressBar running
+					
 					while ((readLine = b.readLine()) != null) {
 						broken_text = readLine.split(",");
 					    String date_phu = broken_text[0];
@@ -192,6 +195,11 @@ public class Convert {
 						}
 					}
 					writer.close();
+					
+					//set back progressBar
+					progressBar.setIndeterminate(false);
+					progressBar.setValue(100);
+					
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -199,9 +207,7 @@ public class Convert {
 			}
 		});
 		
-		JProgressBar progressBar = new JProgressBar();
-		progressBar.setBounds(102, 170, 232, 14);
-		frmThong.getContentPane().add(progressBar);
+		
 	}
 	
 }
