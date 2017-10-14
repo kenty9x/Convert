@@ -21,6 +21,7 @@ import java.awt.Cursor;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.JProgressBar;
+import java.awt.SystemColor;
 
 public class Convert {
 	String path;
@@ -113,6 +114,7 @@ public class Convert {
 		Choice choice = new Choice();
 		choice.add("M5");
 		choice.add("M15");
+		choice.add("M30");
 		choice.add("H1");
 		choice.add("H4");
 		choice.add("D1");
@@ -138,6 +140,7 @@ public class Convert {
 				textArea.setText("You selected " + choice.getSelectedItem() + " timeframe. Push convert button to start...");
 				if(choice.getSelectedItem()=="M5") {row=5;}
 				if(choice.getSelectedItem()=="M15") {row=15;}
+				if(choice.getSelectedItem()=="M30") {row=30;}
 				if(choice.getSelectedItem()=="H1") {row=60;}
 				if(choice.getSelectedItem()=="H4") {row=240;}
 				if(choice.getSelectedItem()=="D1") {row=1440;}
@@ -148,17 +151,24 @@ public class Convert {
 		JButton btnNewButton_1 = new JButton("Convert");
 		btnNewButton_1.setBounds(179, 203, 89, 23);
 		frmThong.getContentPane().add(btnNewButton_1);
+		
+		JTextArea txtrCreatedByLe = new JTextArea();
+		txtrCreatedByLe.setBackground(SystemColor.menu);
+		txtrCreatedByLe.setEditable(false);
+		txtrCreatedByLe.setText("Created by Le Ba Thong");
+		txtrCreatedByLe.setBounds(143, 237, 191, 22);
+		frmThong.getContentPane().add(txtrCreatedByLe);
 		btnNewButton_1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					progressBar.setValue(0); //set progressBar running
 					String[] broken_text = null;
 					float open_chinh = 0, high_chinh = 0, low_chinh = 0, close_chinh;
 					String date_chinh = null, time_chinh = null;
 					PrintWriter writer = new PrintWriter("converted.txt");
 					int count = 0;
 					
-					progressBar.setIndeterminate(true); //set progressBar running
 					
 					while ((readLine = b.readLine()) != null) {
 						broken_text = readLine.split(",");
@@ -209,6 +219,5 @@ public class Convert {
 		
 		
 	}
-	
 }
 
