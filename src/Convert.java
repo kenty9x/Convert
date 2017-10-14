@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -151,9 +152,47 @@ public class Convert {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					String[] broken_text = null;
+					float open_chinh = 0, high_chinh = 0, low_chinh = 0, close_chinh;
+					String date_chinh = null, time_chinh = null;
+					PrintWriter writer = new PrintWriter("converted.txt");
+					int count = 0;
 					while ((readLine = b.readLine()) != null) {
-					    System.out.println(readLine);
+						broken_text = readLine.split(",");
+					    String date_phu = broken_text[0];
+					    String[] time_phu = broken_text[1].split(":");
+					    String hour_phu = time_phu[0];
+					    int min_phu = Integer.valueOf(time_phu[1]);
+					    float open_phu = Float.valueOf(broken_text[2]);
+					    float high_phu = Float.valueOf(broken_text[3]);
+					    float low_phu  = Float.valueOf(broken_text[4]);
+					    float close_phu = Float.valueOf(broken_text[5]); 
+					   
+					    if(min_phu % 5 == 0 ) {
+					    	count += 1;
+					    	date_chinh = date_phu;
+					    	time_chinh = broken_text[1];
+					    	open_chinh = open_phu;
+					    	high_chinh = high_phu;
+					    	low_chinh = low_phu;					    	
+					    }
+					    if(count > 1) {
+					    	if(high_phu > high_chinh) {
+					    		high_chinh=high_phu;
+					    	}
+					    	if(low_phu < low_chinh) {
+								low_chinh = low_phu;
+							}
+					    	count += 1;
+					    }
+						if(count==5) {
+							System.out.println(min_phu);
+							close_chinh = close_phu;
+							writer.println(date_chinh+","+time_chinh+","+open_chinh+","+high_chinh+","+low_chinh+","+close_chinh);
+							count = 0;
+						}
 					}
+					writer.close();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
