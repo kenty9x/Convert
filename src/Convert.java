@@ -167,25 +167,24 @@ public class Convert {
 					    float high_phu = Float.valueOf(broken_text[3]);
 					    float low_phu  = Float.valueOf(broken_text[4]);
 					    float close_phu = Float.valueOf(broken_text[5]); 
-					   
-					    if(min_phu % 5 == 0 ) {
-					    	count += 1;
-					    	date_chinh = date_phu;
+					    if(min_phu % row != 0 && count == 0) {continue;}
+				       	count += 1;
+				    	if(count ==1) {
+				    		date_chinh = date_phu;
 					    	time_chinh = broken_text[1];
 					    	open_chinh = open_phu;
 					    	high_chinh = high_phu;
-					    	low_chinh = low_phu;					    	
-					    }
-					    if(count > 1) {
-					    	if(high_phu > high_chinh) {
-					    		high_chinh=high_phu;
-					    	}
-					    	if(low_phu < low_chinh) {
-								low_chinh = low_phu;
-							}
-					    	count += 1;
-					    }
-						if(count==5) {
+					    	low_chinh = low_phu;
+				    	}				  			    	
+					    
+				        if(high_phu > high_chinh) {
+				    		high_chinh=high_phu;
+				    	}
+				    	if(low_phu < low_chinh) {
+							low_chinh = low_phu;
+						}
+					    
+						if(count==row) {
 							System.out.println(min_phu);
 							close_chinh = close_phu;
 							writer.println(date_chinh+","+time_chinh+","+open_chinh+","+high_chinh+","+low_chinh+","+close_chinh);
